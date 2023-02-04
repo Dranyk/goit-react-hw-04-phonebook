@@ -1,33 +1,34 @@
-import { Component } from 'react';
+import { useState  } from 'react';
 import css from './Form.module.css';
 import PropTypes from 'prop-types';
 
-class Phonebook extends Component {
-  state = {
-    name: '',
-    number: '',
+
+export const Form = ({ onSubmitForm }) => {
+  const [name, setName] = useState('');
+  const [number, setNumber] = useState('');
+
+  const handleCanngeInput = ({ currentTarget: { name, value } }) => {
+    switch (name) {
+      case 'name':
+        setName(value);
+        break;
+      case 'number':
+        setNumber(value);
+        break;
+      default:
+        break;
+    }
   };
 
-  static propTypes = {
-    onSubmitForm: PropTypes.func.isRequired,
-  };
-
-  handleCanngeInput = evt => {
-    const { name, value } = evt.currentTarget;
-    this.setState({ [name]: value });
-  };
-
-  handleFormSubmit = evt => {
+  const handleFormSubmit = evt => {
     evt.preventDefault();
-    const { name, number } = this.state;
-    this.props.onSubmitForm({ name, number });
-    this.setState({ name: '', number: '' });
+    onSubmitForm({ name, number });
+    setName('');
+    setNumber('');
   };
 
-  render() {
-    const { name, number } = this.state;
     return (
-      <form className={css.phonebook} onSubmit={this.handleFormSubmit}>
+      <form className={css.phonebook} onSubmit={handleFormSubmit}>
         <label>
           <p>Name</p>
           <input
@@ -37,7 +38,7 @@ class Phonebook extends Component {
             title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
             required
             value={name}
-            onChange={this.handleCanngeInput}
+            onChange={handleCanngeInput}
           />
         </label>
         <label>
@@ -49,7 +50,7 @@ class Phonebook extends Component {
             title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
             required
             value={number}
-            onChange={this.handleCanngeInput}
+            onChange={handleCanngeInput}
           />
         </label>
         <button className={css.button} type="submit">
@@ -58,6 +59,7 @@ class Phonebook extends Component {
       </form>
     );
   }
-}
 
-export default Phonebook;
+Form.propTypes = {
+  onSubmitForm: PropTypes.func.isRequired,
+};
